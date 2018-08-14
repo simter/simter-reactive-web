@@ -3,6 +3,7 @@ package tech.simter.reactive.web.webfilter
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.http.server.reactive.ServerHttpResponse
@@ -43,7 +44,9 @@ class JwtWebFilter @Autowired constructor(
   }
 
   override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-    return if (requireAuthorized) { // need authorized
+    return if (!requireAuthorized || exchange.request.method == HttpMethod.OPTIONS)
+      chain.filter(exchange)
+    else { // need authorized
       var authorization = exchange.request.headers.getFirst(JWT_HEADER_NAME)
       if (authorization == null || !authorization.startsWith(JWT_VALUE_PREFIX)) {
         abortRequest(
@@ -79,7 +82,7 @@ class JwtWebFilter @Autowired constructor(
           )
         }
       }
-    } else chain.filter(exchange)
+    }
   }
 
   private fun abortRequest(response: ServerHttpResponse, status: HttpStatus, body: String? = null): Mono<Void> {
