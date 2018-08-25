@@ -28,7 +28,7 @@ import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8_VALUE
 @Component
 class JwtWebFilter @Autowired constructor(
   @Value("\${simter.jwt.secret-key:test}") val secretKey: String,
-  @Value("\${simter.jwt.require-authorized:true}") val requireAuthorized: Boolean
+  @Value("\${simter.jwt.require-authorized:false}") val requireAuthorized: Boolean
 ) : WebFilter {
   private val logger = LoggerFactory.getLogger(JwtWebFilter::class.java)
 

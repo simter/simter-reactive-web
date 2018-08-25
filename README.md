@@ -16,7 +16,7 @@ Simter reactive web extension. It's for webflux extension config.
 
 ### 2.1. JwtWebFilter
 
-A Jwt WebFilter for webflux. Enabled by `simter.jwt.require-authorized`, it's default value is `true`.
+A Jwt WebFilter for webflux. Enabled by `simter.jwt.require-authorized`, it's default value is `false`.
 
 The Jwt secret key should be config by `simter.jwt.secret-key`, it's default value is `test`.
 
