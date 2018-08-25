@@ -34,6 +34,7 @@ class JwtWebFilter @Autowired constructor(
 
   init {
     logger.warn("Register JwtWebFilter")
+    logger.warn("simter.jwt.require-authorized={}", requireAuthorized)
   }
 
   companion object {
