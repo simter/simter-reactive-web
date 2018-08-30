@@ -81,7 +81,7 @@ class WebFluxConfiguration {
   fun simterJacksonCustomizer(): Jackson2ObjectMapperBuilderCustomizer {
     return Jackson2ObjectMapperBuilderCustomizer {
       // not serialize null and empty value
-      it.serializationInclusion(JsonInclude.Include.NON_EMPTY)
+      it.serializationInclusion(JsonInclude.Include.NON_NULL)
 
       it.featuresToDisable(
         DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
