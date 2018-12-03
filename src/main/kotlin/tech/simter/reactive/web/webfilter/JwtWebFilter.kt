@@ -27,14 +27,17 @@ import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8_VALUE
  */
 @Component
 class JwtWebFilter @Autowired constructor(
-  @Value("\${simter.jwt.secret-key:test}") val secretKey: String,
-  @Value("\${simter.jwt.require-authorized:false}") val requireAuthorized: Boolean
+  @Value("\${simter.jwt.secret-key:test}") private val secretKey: String,
+  @Value("\${simter.jwt.require-authorized:false}") private val requireAuthorized: Boolean,
+  @Value("\${simter.jwt.exclude-paths:#{null}}") private val excludePaths: List<String>?
 ) : WebFilter {
   private val logger = LoggerFactory.getLogger(JwtWebFilter::class.java)
+  private val hasExcludePaths: Boolean = excludePaths != null && excludePaths.isNotEmpty()
 
   init {
     logger.warn("Register JwtWebFilter")
     logger.warn("simter.jwt.require-authorized={}", requireAuthorized)
+    logger.warn("simter.jwt.exclude-paths={}", excludePaths?.joinToString(","))
   }
 
   companion object {
@@ -45,7 +48,9 @@ class JwtWebFilter @Autowired constructor(
   }
 
   override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-    return if (!requireAuthorized || exchange.request.method == HttpMethod.OPTIONS)
+    return if (!requireAuthorized
+      || exchange.request.method == HttpMethod.OPTIONS
+      || isExcludePath(exchange.request.path.value()))
       chain.filter(exchange)
     else { // need authorized
       var authorization = exchange.request.headers.getFirst(JWT_HEADER_NAME)
@@ -85,6 +90,12 @@ class JwtWebFilter @Autowired constructor(
       }
     }
   }
+
+  private fun isExcludePath(path: String): Boolean {
+    return if (isRootPath(path)) true else hasExcludePaths && excludePaths!!.any { path.startsWith(it) }
+  }
+
+  private fun isRootPath(path: String) = path == "/" || path == "/index.html" || path == "/index.htm"
 
   private fun abortRequest(response: ServerHttpResponse, status: HttpStatus, body: String? = null): Mono<Void> {
     response.statusCode = status
