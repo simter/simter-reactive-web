@@ -16,16 +16,18 @@ Simter reactive web extension. It's for webflux extension config.
 
 ### 2.1. JwtWebFilter
 
-A Jwt WebFilter for webflux. Enabled by `simter.jwt.require-authorized`, it's default value is `false`.
+A Jwt WebFilter for webflux.
 
-The Jwt secret key should be config by `simter.jwt.secret-key`, it's default value is `test`.
+- Enabled by `simter.jwt.require-authorized`, it's default value is `false`.
+- Config the Jwt secret key by `simter.jwt.secret-key`, it's default value is `test`.
+- Config the Jwt exclude array paths by `simter.jwt.exclude-paths`, it's default value is `null`.
 
 ### 2.2. WebFluxConfiguration
 
 A '[WebFlux config API]' implementation (implements `WebFluxConfigurer` interface). And some jackson global config:
 
 1. Some global jackson config :
-    - Set serialization inclusion to `NON_EMPTY`
+    - Set serialization inclusion to `NON_NULL`
     - Disable some features:
         - DeserializationFeature.`FAIL_ON_UNKNOWN_PROPERTIES`
         - DeserializationFeature.`ADJUST_DATES_TO_CONTEXT_TIME_ZONE`
@@ -39,7 +41,6 @@ A '[WebFlux config API]' implementation (implements `WebFluxConfigurer` interfac
 
 2. Add a `Jackson2JsonEncoder` to `WebFluxConfigurer/HttpMessageCodecs`
 3. Add a `Jackson2JsonDecoder` to `WebFluxConfigurer/HttpMessageCodecs`
-
 
 ## 3. Build
 

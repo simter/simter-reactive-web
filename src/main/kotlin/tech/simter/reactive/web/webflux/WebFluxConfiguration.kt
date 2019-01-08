@@ -21,7 +21,7 @@ import tech.simter.jackson.ext.javatime.JavaTimeModule
  * The default WebFlux config for simter base projects.
  *
  * 1. Some global jackson config :
- *   - Set serialization inclusion to `NON_EMPTY`
+ *   - Set serialization inclusion to `NON_NULL`
  *   - Disable some features:
  *     - DeserializationFeature.`FAIL_ON_UNKNOWN_PROPERTIES`
  *     - DeserializationFeature.`ADJUST_DATES_TO_CONTEXT_TIME_ZONE`

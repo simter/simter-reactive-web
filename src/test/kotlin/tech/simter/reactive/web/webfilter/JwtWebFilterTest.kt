@@ -22,7 +22,6 @@ import tech.simter.reactive.web.webfilter.JwtWebFilter.Companion.JWT_HEADER_NAME
 import tech.simter.reactive.web.webfilter.JwtWebFilter.Companion.JWT_VALUE_PREFIX
 import java.time.ZonedDateTime
 
-
 @SpringJUnitConfig(JwtWebFilter::class)
 @EnableWebFlux
 @TestPropertySource(properties = [

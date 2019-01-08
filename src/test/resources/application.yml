@@ -1,3 +1,5 @@
 spring:
+  main:
+    banner-mode: 'off'
   jackson:
     default-property-inclusion: NON_EMPTY # see enum of com.fasterxml.jackson.annotation.JsonInclude.Include
