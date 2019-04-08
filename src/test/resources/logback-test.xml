@@ -2,7 +2,7 @@
 <configuration>
   <include resource="org/springframework/boot/logging/logback/base.xml"/>
   <!-- trace < debug < info < warn < error -->
-  <root level="warn"/>
+  <root level="error"/>
 
-  <logger name="tech.simter.reactive.web" level="warn"/>
+  <logger name="tech.simter.reactive.web" level="error"/>
 </configuration>
