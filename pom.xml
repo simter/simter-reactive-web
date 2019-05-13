@@ -31,7 +31,7 @@
     </dependency>
     <dependency>
       <groupId>tech.simter</groupId>
-      <artifactId>simter-jackson-ext</artifactId>
+      <artifactId>simter-jackson-javatime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

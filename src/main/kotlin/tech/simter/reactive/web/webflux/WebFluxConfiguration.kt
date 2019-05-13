@@ -15,7 +15,7 @@ import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.web.reactive.config.DelegatingWebFluxConfiguration
 import org.springframework.web.reactive.config.WebFluxConfigurer
-import tech.simter.jackson.ext.javatime.JavaTimeModule
+import tech.simter.jackson.javatime.JavaTimeModule
 
 /**
  * The default WebFlux config for simter base projects.
@@ -28,7 +28,7 @@ import tech.simter.jackson.ext.javatime.JavaTimeModule
  *     - SerializationFeature.`WRITE_DATES_AS_TIMESTAMPS`
  *   - Enable feature DeserializationFeature.`ACCEPT_EMPTY_STRING_AS_NULL_OBJECT`
  *   - Add a custom `JavaTimeModule`.
- *     > It's a brand new java-time serialize and deserialize module with global config from [simter-jackson-ext],
+ *     > It's a brand new java-time serialize and deserialize module with global config from [simter-jackson-javatime],
  *       not the jackson standard `JavaTimeModule` module. It's data-time format is for localize config,
  *       not the standard ISO format. The default data-time format is like '`yyyy-MM-dd HH:mm`',
  *       accurate to minute and without zone and offset info (global use local zone and offset default)
