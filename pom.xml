@@ -32,6 +32,7 @@
     <dependency>
       <groupId>tech.simter</groupId>
       <artifactId>simter-jackson-javatime</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

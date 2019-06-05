@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
 import org.springframework.context.annotation.Bean
@@ -70,6 +71,7 @@ class WebFluxConfiguration {
    * [JacksonAutoConfiguration.Jackson2ObjectMapperBuilderCustomizerConfiguration.StandardJackson2ObjectMapperBuilderCustomizer.configureModules]
    */
   @Bean
+  @ConditionalOnClass(name = ["tech.simter.jackson.javatime.JavaTimeModule"])
   fun simterJavaTimeModule(): Module {
     return JavaTimeModule()
   }
