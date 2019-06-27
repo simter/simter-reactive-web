@@ -68,6 +68,11 @@ class JwtWebFilter @Autowired constructor(
           logger.debug("jwt verify success")
           chain.filter(exchange)
             .subscriberContext {
+              // generate extras data
+              val extras = mutableMapOf("path" to exchange.request.path.value())
+              exchange.request.headers.getFirst(JWT_HEADER_NAME)?.apply { extras[JWT_HEADER_NAME] = this }
+              exchange.request.headers.getFirst("origin")?.apply { extras["origin"] = this }
+
               // create a system-context from jwt.payload.data
               val data = jwt.payload.data
               it.put(SYSTEM_CONTEXT_KEY, SystemContext.DataHolder(
@@ -76,7 +81,8 @@ class JwtWebFilter @Autowired constructor(
                   account = data["user.code"] ?: "UNKNOWN",
                   name = data["user.name"] ?: "UNKNOWN"
                 ),
-                roles = data["roles"]?.split(",") ?: listOf()
+                roles = data["roles"]?.split(",") ?: listOf(),
+                extras = extras
               ))
             }
         } catch (e: DecodeException) { // jwt is illegal
