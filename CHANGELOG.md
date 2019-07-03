@@ -1,4 +1,13 @@
-# Changelog for simter-reactive-web package
+# simter-reactive-web changelog
+
+## 1.1.0 - 2019-07-03
+
+- Change parent to simter-dependencies-1.2.0
+- Use `simter-jackson-javatime` instead of `simter-jackson-ext`
+- Add `Utils.TEXT_HTML_UTF8|TEXT_XML_UTF8` constants
+- Set `simter-jackson-javatime` optional
+- Add `Utils.createWebClient` method
+- Add extras data to context by `JwtWebFilter`
 
 ## 1.0.0 - 2019-01-08
 
