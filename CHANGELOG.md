@@ -1,5 +1,9 @@
 # simter-reactive-web changelog
 
+## 1.1.1 - 2019-09-27
+
+- Fixed kotlin compile config
+
 ## 1.1.0 - 2019-07-03
 
 - Change parent to simter-dependencies-1.2.0
