@@ -42,6 +42,28 @@ A '[WebFlux config API]' implementation (implements `WebFluxConfigurer` interfac
 2. Add a `Jackson2JsonEncoder` to `WebFluxConfigurer/HttpMessageCodecs`
 3. Add a `Jackson2JsonDecoder` to `WebFluxConfigurer/HttpMessageCodecs`
 
+### 2.3. DefaultDataBufferInserter
+
+An extension of `BodyInserter` that allows for write data to body through default allocate `DataBuffer`.
+
+Example:
+
+```
+override fun handle(request: ServerRequest): Mono<ServerResponse> {
+  return ok()
+    .contentType(APPLICATION_OCTET_STREAM)
+    .header("Content-Disposition", "attachment; filename=\"t.txt\"")
+    .body(DefaultDataBufferInserter {
+      // way 1: write something to this dataBuffer directly
+      // it.write(...)
+
+      // way 2: write something to outputStream from this dataBuffer
+      // val os: OutputStream = it.asOutputStream()
+      // write something to os, such as `os.write(...)`
+    })
+}
+```
+
 ## 3. Build
 
 ```bash
