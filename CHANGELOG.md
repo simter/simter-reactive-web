@@ -1,5 +1,10 @@
 # simter-reactive-web changelog
 
+## 1.1.2 - 2019-10-14
+
+- Add DefaultDataBufferInserter class
+    > Extension of `BodyInserter` that allows for write data to body through default allocate `DataBuffer`
+
 ## 1.1.1 - 2019-09-27
 
 - Fixed kotlin compile config
