@@ -25,9 +25,13 @@ object Utils {
    *
    * Specify a proxy by [proxyHost] and [proxyPort] parameters.
    */
-  fun createWebClient(baseUrl: String, proxyHost: String? = null, proxyPort: Int? = null): WebClient {
+  fun createWebClient(
+    baseUrl: String,
+    proxyHost: String? = null,
+    proxyPort: Int? = null
+  ): WebClient {
     val clientBuilder = WebClient.builder().baseUrl(baseUrl)
-    return if (proxyHost == null) clientBuilder.build()
+    return if (proxyHost.isNullOrEmpty() && proxyPort == null) clientBuilder.build()
     else { // use proxy
       logger.warn("use proxy(host={}, port={}) for server '{}'", proxyHost, proxyPort, baseUrl)
       clientBuilder
