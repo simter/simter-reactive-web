@@ -1,5 +1,11 @@
 # simter-reactive-web changelog
 
+## 1.2.0-M1 - 2019-11-16
+
+- Upgrade to simter-1.3.0-M4
+- Fixed empty proxy error in Utils.createWebClient
+- Add timeout, redirect, secure and userAgent params on Utils.createWebClient
+
 ## 1.1.2 - 2019-10-14
 
 - Add DefaultDataBufferInserter class
