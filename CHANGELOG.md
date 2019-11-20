@@ -1,5 +1,10 @@
 # simter-reactive-web changelog
 
+## 1.2.0-M2 - 2019-11-20
+
+- Upgrade to simter-1.3.0-M6
+- Add maxInMemorySize (KB unit) param on Utils.createWebClient
+
 ## 1.2.0-M1 - 2019-11-16
 
 - Upgrade to simter-1.3.0-M4
