@@ -4,12 +4,12 @@
   <parent>
     <groupId>tech.simter</groupId>
     <artifactId>simter-dependencies</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0-M6</version>
     <relativePath/>
   </parent>
   <groupId>tech.simter.reactive</groupId>
   <artifactId>simter-reactive-web</artifactId>
-  <version>1.2.0-M1</version>
+  <version>1.2.0-M2</version>
   <packaging>jar</packaging>
   <name>simter-reactive-web</name>
   <description>Simter reactive extension for web</description>

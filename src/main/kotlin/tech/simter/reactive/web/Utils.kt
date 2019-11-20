@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.*
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 import reactor.netty.tcp.ProxyProvider
@@ -32,6 +33,30 @@ object Utils {
     .trustManager(InsecureTrustManagerFactory.INSTANCE)
     .build()
 
+  fun createWebClient(
+    baseUrl: String,
+    proxyHost: String? = null,
+    proxyPort: Int? = null,
+    connectTimeout: Int = 30,      // default 30 seconds
+    readWriteTimeout: Int = 120,   // default 2 minutes
+    secure: Boolean = false,       // whether use ssl (true-https, false-http)
+    autoRedirect: Boolean = false, // whether auto redirect when status code in 30[1278]
+    userAgent: String? = null,
+    maxInMemorySize: Int? = null   // MB unit for max body size
+  ): WebClient {
+    return createWebClientBuilder(
+      baseUrl = baseUrl,
+      proxyHost = proxyHost,
+      proxyPort = proxyPort,
+      connectTimeout = connectTimeout,
+      readWriteTimeout = readWriteTimeout,
+      secure = secure,
+      autoRedirect = autoRedirect,
+      userAgent = userAgent,
+      maxInMemorySize = maxInMemorySize
+    ).build()
+  }
+
   /**
    * Create a [WebClient] instance with a [baseUrl] for common usage.
    *
@@ -41,7 +66,7 @@ object Utils {
    * 4. default connect timeout 30 seconds by param [connectTimeout].
    * 5. default read write timeout 120 seconds by param [readWriteTimeout].
    */
-  fun createWebClient(
+  fun createWebClientBuilder(
     baseUrl: String,
     proxyHost: String? = null,
     proxyPort: Int? = null,
@@ -49,8 +74,9 @@ object Utils {
     readWriteTimeout: Int = 120,   // default 2 minutes
     secure: Boolean = false,       // whether use ssl (true-https, false-http)
     autoRedirect: Boolean = false, // whether auto redirect when status code in 30[1278]
-    userAgent: String? = null
-  ): WebClient {
+    userAgent: String? = null,
+    maxInMemorySize: Int? = null   // KB unit, for max body size，since spring-5.2.1
+  ): WebClient.Builder {
     logger.warn(
       "WebClient: connectTimeout={}s, readWriteTimeout={}s, proxy.host={}, proxy.port={}, secure={}",
       connectTimeout, readWriteTimeout, proxyHost, proxyPort, secure
@@ -78,7 +104,9 @@ object Utils {
     if (secure) tcpClient = tcpClient.secure { it.sslContext(defaultSslContext) }
 
     // create web client instance
-    return WebClient.builder()
+    // DEFAULT_MESSAGE_MAX_SIZE 256K (= 256 * 1024 = 262144)
+    // See https://github.com/spring-projects/spring-framework/issues/23961
+    val builder = WebClient.builder()
       .baseUrl(baseUrl)                   // base url
       .defaultHeader("User-Agent", userAgent ?: DEFAULT_USER_AGENT) // default User-Agent
       .clientConnector(
@@ -87,6 +115,15 @@ object Utils {
             .followRedirect(autoRedirect) // auto redirect
         )
       )
-      .build()
+
+    // set for max body size，since spring-5.2.1
+    if (maxInMemorySize != null && maxInMemorySize > 0) {
+      builder.exchangeStrategies(
+        ExchangeStrategies.builder()
+          .codecs { it.defaultCodecs().maxInMemorySize(maxInMemorySize * 1024) } // KB to Byte
+          .build()
+      )
+    }
+    return builder
   }
 }
