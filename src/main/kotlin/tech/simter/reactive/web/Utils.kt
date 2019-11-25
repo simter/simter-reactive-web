@@ -12,6 +12,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
+import reactor.netty.resources.ConnectionProvider
 import reactor.netty.tcp.ProxyProvider
 import reactor.netty.tcp.TcpClient
 
@@ -83,7 +84,7 @@ object Utils {
     )
 
     // timeout（WebFlux-v5.1+）
-    var tcpClient: TcpClient = TcpClient.create()
+    var tcpClient: TcpClient = TcpClient.create(ConnectionProvider.fixed("httpPool")) // fixed connect pool
       .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout * 1000) // connect timeout ms
       .option(ChannelOption.SO_TIMEOUT, connectTimeout * 1000)             // socket timeout ms
       .doOnConnected {
