@@ -28,10 +28,6 @@ object Utils {
   val TEXT_XML_UTF8: MediaType = MediaType.valueOf(TEXT_XML_UTF8_VALUE)
 
   const val DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36"
-  private var defaultSslContext = SslContextBuilder
-    .forClient()
-    .trustManager(InsecureTrustManagerFactory.INSTANCE)
-    .build()
 
   fun createWebClient(
     baseUrl: String,
@@ -101,7 +97,14 @@ object Utils {
     }
 
     // ssl
-    if (secure) tcpClient = tcpClient.secure { it.sslContext(defaultSslContext) }
+    if (secure) tcpClient = tcpClient.secure {
+      it.sslContext(
+        SslContextBuilder
+          .forClient()
+          .trustManager(InsecureTrustManagerFactory.INSTANCE)
+          .build()
+      )
+    }
 
     // create web client instance
     // DEFAULT_MESSAGE_MAX_SIZE 256K (= 256 * 1024 = 262144)
