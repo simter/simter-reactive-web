@@ -9,7 +9,7 @@
   </parent>
   <groupId>tech.simter.reactive</groupId>
   <artifactId>simter-reactive-web</artifactId>
-  <version>1.2.0-M2</version>
+  <version>1.2.0-M3</version>
   <packaging>jar</packaging>
   <name>simter-reactive-web</name>
   <description>Simter reactive extension for web</description>
