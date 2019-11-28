@@ -1,5 +1,12 @@
 # simter-reactive-web changelog
 
+## 1.2.0-M3 - 2019-11-28
+
+- Upgrade to simter-1.3.0-M7
+- Set default user-agent to chrome-46
+- Should not share sslContext on each WebClient
+- Use fixed pool connection by default on Utils.createWebClientBuilder
+
 ## 1.2.0-M2 - 2019-11-20
 
 - Upgrade to simter-1.3.0-M6
