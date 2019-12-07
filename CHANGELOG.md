@@ -1,5 +1,9 @@
 # simter-reactive-web changelog
 
+## 1.2.0-M4 - 2019-12-07
+
+- Upgrade to simter-1.3.0-M9
+
 ## 1.2.0-M3 - 2019-11-28
 
 - Upgrade to simter-1.3.0-M7
