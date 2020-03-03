@@ -1,5 +1,10 @@
 # simter-reactive-web changelog
 
+## 1.2.0-M5 - 2020-03-03
+
+- Add Utils.createClientHttpConnector method
+- Upgrade to simter-1.3.0-M13
+
 ## 1.2.0-M4 - 2019-12-07
 
 - Upgrade to simter-1.3.0-M9
