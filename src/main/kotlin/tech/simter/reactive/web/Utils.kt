@@ -8,6 +8,7 @@ import io.netty.handler.timeout.WriteTimeoutHandler
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.*
+import org.springframework.http.client.reactive.ClientHttpConnector
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
@@ -74,18 +75,69 @@ object Utils {
     userAgent: String? = null,
     maxInMemorySize: Int? = null   // KB unit, for max body size，since spring-5.2.1
   ): WebClient.Builder {
-    logger.warn(
-      "WebClient: connectTimeout={}s, readWriteTimeout={}s, proxy.host={}, proxy.port={}, secure={}",
-      connectTimeout, readWriteTimeout, proxyHost, proxyPort, secure
+    logger.warn("WebClient: baseUrl={}, maxInMemorySize={}", baseUrl, maxInMemorySize)
+
+    // create web client instance
+    // DEFAULT_MESSAGE_MAX_SIZE 256K (= 256 * 1024 = 262144)
+    // See https://github.com/spring-projects/spring-framework/issues/23961
+    val builder = WebClient.builder()
+      .baseUrl(baseUrl)                   // base url
+      .defaultHeader("User-Agent", userAgent ?: DEFAULT_USER_AGENT) // default User-Agent
+      .clientConnector(
+        createClientHttpConnector(
+          proxyHost = proxyHost,
+          proxyPort = proxyPort,
+          connectTimeout = connectTimeout,
+          socketTimeout = connectTimeout,
+          readTimeout = readWriteTimeout,
+          writeTimeout = readWriteTimeout,
+          secure = secure,
+          autoRedirect = autoRedirect
+        )
+      )
+
+    // set for max body size，since spring-5.2.1
+    if (maxInMemorySize != null && maxInMemorySize > 0) {
+      builder.exchangeStrategies(
+        ExchangeStrategies.builder()
+          .codecs { it.defaultCodecs().maxInMemorySize(maxInMemorySize * 1024) } // KB to Byte
+          .build()
+      )
+    }
+    return builder
+  }
+
+  fun createClientHttpConnector(
+    proxyHost: String? = null,
+    proxyPort: Int? = null,
+    connectTimeout: Int = 30,      // default 30 seconds
+    socketTimeout: Int = 30,       // default 30 seconds
+    readTimeout: Int = 120,        // default 1 minutes
+    writeTimeout: Int = 120,       // default 1 minutes
+    secure: Boolean = false,       // whether use ssl (true-https, false-http)
+    autoRedirect: Boolean = false  // whether auto redirect when status code in 30[1278]
+  ): ClientHttpConnector {
+    logger.warn("""
+      ClientHttpConnector: 
+        connectTimeout={}s,
+        socketTimeout={}s,
+        readTimeout={}s, 
+        writeTimeout={}s, 
+        autoRedirect={}, 
+        proxy.host={}, 
+        proxy.port={}, 
+        secure={}
+      """,
+      connectTimeout, readTimeout, writeTimeout, autoRedirect, proxyHost, proxyPort, secure
     )
 
     // timeout（WebFlux-v5.1+）
-    var tcpClient: TcpClient = TcpClient.create(ConnectionProvider.fixed("httpPool")) // fixed connect pool
+    var tcpClient: TcpClient = TcpClient.create(ConnectionProvider.create("httpPool")) // fixed max connect pool
       .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout * 1000) // connect timeout ms
-      .option(ChannelOption.SO_TIMEOUT, connectTimeout * 1000)             // socket timeout ms
+      .option(ChannelOption.SO_TIMEOUT, socketTimeout * 1000)              // socket timeout ms
       .doOnConnected {
-        it.addHandlerLast(ReadTimeoutHandler(readWriteTimeout))            // read timeout seconds
-          .addHandlerLast(WriteTimeoutHandler(readWriteTimeout))           // write timeout seconds
+        it.addHandlerLast(ReadTimeoutHandler(readTimeout))                 // read timeout seconds
+          .addHandlerLast(WriteTimeoutHandler(writeTimeout))               // write timeout seconds
       }
 
     // proxy
@@ -107,27 +159,9 @@ object Utils {
       )
     }
 
-    // create web client instance
-    // DEFAULT_MESSAGE_MAX_SIZE 256K (= 256 * 1024 = 262144)
-    // See https://github.com/spring-projects/spring-framework/issues/23961
-    val builder = WebClient.builder()
-      .baseUrl(baseUrl)                   // base url
-      .defaultHeader("User-Agent", userAgent ?: DEFAULT_USER_AGENT) // default User-Agent
-      .clientConnector(
-        ReactorClientHttpConnector(
-          HttpClient.from(tcpClient)
-            .followRedirect(autoRedirect) // auto redirect
-        )
-      )
-
-    // set for max body size，since spring-5.2.1
-    if (maxInMemorySize != null && maxInMemorySize > 0) {
-      builder.exchangeStrategies(
-        ExchangeStrategies.builder()
-          .codecs { it.defaultCodecs().maxInMemorySize(maxInMemorySize * 1024) } // KB to Byte
-          .build()
-      )
-    }
-    return builder
+    return ReactorClientHttpConnector(
+      HttpClient.from(tcpClient)
+        .followRedirect(autoRedirect) // auto redirect
+    )
   }
 }
