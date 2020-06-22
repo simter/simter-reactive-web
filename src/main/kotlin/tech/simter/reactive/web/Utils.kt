@@ -6,12 +6,16 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.*
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.*
 import org.springframework.http.client.reactive.ClientHttpConnector
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.server.ServerResponse
+import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
 import reactor.netty.tcp.ProxyProvider
@@ -163,5 +167,103 @@ object Utils {
       HttpClient.from(tcpClient)
         .followRedirect(autoRedirect) // auto redirect
     )
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with the specific status code.
+   * If the [e] has message content, use it as the response body content with content-type `text/plain`.
+   */
+  fun responseSpecificStatus(status: HttpStatus, e: Throwable): Mono<ServerResponse> {
+    return if (e.message.isNullOrBlank()) ServerResponse.status(status).build()
+    else ServerResponse.status(status).contentType(TEXT_PLAIN).bodyValue(e.message!!)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with the specific status code.
+   * If the [msg] has content, use it as the response body content with content-type `text/plain`.
+   */
+  fun responseSpecificStatus(status: HttpStatus, msg: String? = null): Mono<ServerResponse> {
+    return if (msg.isNullOrBlank()) ServerResponse.status(status).build()
+    else ServerResponse.status(status).contentType(TEXT_PLAIN).bodyValue(msg)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `404 Not Found`.
+   * Use the [msg] as the response body content with content-type `text/plain`.
+   */
+  fun responseNotFoundStatus(msg: String): Mono<ServerResponse> {
+    return responseSpecificStatus(NOT_FOUND, msg)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `404 Not Found`.
+   * If the [e] has message content, use it as the response body content with content-type `text/plain`.
+   */
+  fun responseNotFoundStatus(e: Throwable): Mono<ServerResponse> {
+    return responseSpecificStatus(NOT_FOUND, e)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `410 Gone`.
+   * Use the [msg] as the response body content with content-type `text/plain`.
+   */
+  fun responseGoneStatus(msg: String): Mono<ServerResponse> {
+    return responseSpecificStatus(GONE, msg)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `410 Gone`.
+   * If the [e] has message content, use it as the response body content with content-type `text/plain`.
+   */
+  fun responseGoneStatus(e: Throwable): Mono<ServerResponse> {
+    return responseSpecificStatus(GONE, e)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `403 Forbidden`.
+   * Use the [msg] as the response body content with content-type `text/plain`.
+   */
+  fun responseForbiddenStatus(msg: String): Mono<ServerResponse> {
+    return responseSpecificStatus(FORBIDDEN, msg)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `403 Forbidden`.
+   * If the [e] has message content, use it as the response body content with content-type `text/plain`.
+   */
+  fun responseForbiddenStatus(e: Throwable): Mono<ServerResponse> {
+    return responseSpecificStatus(FORBIDDEN, e)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `400 Bad Request`.
+   * Use the [msg] as the response body content with content-type `text/plain`.
+   */
+  fun responseBadRequestStatus(msg: String): Mono<ServerResponse> {
+    return responseSpecificStatus(BAD_REQUEST, msg)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `400 Bad Request`.
+   * If the [e] has message content, use it as the response body content with content-type `text/plain`.
+   */
+  fun responseBadRequestStatus(e: Throwable): Mono<ServerResponse> {
+    return responseSpecificStatus(BAD_REQUEST, e)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `409 Conflict`.
+   * Use the [msg] as the response body content with content-type `text/plain`.
+   */
+  fun responseConflictStatus(msg: String): Mono<ServerResponse> {
+    return responseSpecificStatus(CONFLICT, msg)
+  }
+
+  /**
+   * Build a `Mono<ServerResponse>` instance with status code `409 Conflict`.
+   * If the [e] has message content, use it as the response body content with content-type `text/plain`.
+   */
+  fun responseConflictStatus(e: Throwable): Mono<ServerResponse> {
+    return responseSpecificStatus(CONFLICT, e)
   }
 }
