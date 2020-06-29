@@ -128,11 +128,11 @@ object Utils {
         readTimeout={}s, 
         writeTimeout={}s, 
         autoRedirect={}, 
-        proxy.host={}, 
-        proxy.port={}, 
+        proxyHost={}, 
+        proxyPort={}, 
         secure={}
       """,
-      connectTimeout, readTimeout, writeTimeout, autoRedirect, proxyHost, proxyPort, secure
+      connectTimeout, socketTimeout, readTimeout, writeTimeout, autoRedirect, proxyHost, proxyPort, secure
     )
 
     // timeout（WebFlux-v5.1+）
