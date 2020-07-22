@@ -175,7 +175,7 @@ object Utils {
    */
   fun responseSpecificStatus(status: HttpStatus, e: Throwable): Mono<ServerResponse> {
     return if (e.message.isNullOrBlank()) ServerResponse.status(status).build()
-    else ServerResponse.status(status).contentType(TEXT_PLAIN).bodyValue(e.message!!)
+    else ServerResponse.status(status).contentType(TEXT_PLAIN_UTF8).bodyValue(e.message!!)
   }
 
   /**
@@ -184,7 +184,7 @@ object Utils {
    */
   fun responseSpecificStatus(status: HttpStatus, msg: String? = null): Mono<ServerResponse> {
     return if (msg.isNullOrBlank()) ServerResponse.status(status).build()
-    else ServerResponse.status(status).contentType(TEXT_PLAIN).bodyValue(msg)
+    else ServerResponse.status(status).contentType(TEXT_PLAIN_UTF8).bodyValue(msg)
   }
 
   /**
