@@ -33,7 +33,7 @@ A '[WebFlux config API]' implementation (implements `WebFluxConfigurer` interfac
         - DeserializationFeature.`ADJUST_DATES_TO_CONTEXT_TIME_ZONE`
         - SerializationFeature.`WRITE_DATES_AS_TIMESTAMPS`
     - Enable feature DeserializationFeature.`ACCEPT_EMPTY_STRING_AS_NULL_OBJECT`
-    - Add a custom `JavaTimeModule`.
+    - Add a custom `JavaTimeModule` if has dependency `tech.simter:simter-jackson-javatime`.
         > It's a brand new java-time serialize and deserialize module with global config from [simter-jackson-javatime],
           not the jackson standard `JavaTimeModule` module. It's data-time format is for localize config, 
           not the standard ISO format. The default data-time format is like `yyyy-MM-dd HH:mm`, 
