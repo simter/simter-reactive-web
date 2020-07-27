@@ -2,21 +2,19 @@ package tech.simter.reactive.web.webflux
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.codec.ServerCodecConfigurer
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.web.reactive.config.DelegatingWebFluxConfiguration
 import org.springframework.web.reactive.config.WebFluxConfigurer
-import tech.simter.jackson.javatime.JavaTimeModule
 
 /**
  * The default WebFlux config for simter base projects.
@@ -39,6 +37,7 @@ import tech.simter.jackson.javatime.JavaTimeModule
  * @author RJ
  */
 @Configuration("tech.simter.reactive.web.webflux.WebFluxConfiguration")
+@ComponentScan("tech.simter.reactive.web", "tech.simter.jackson.javatime")
 class WebFluxConfiguration {
   @Bean
   fun simterJackson2JsonEncoder(mapper: ObjectMapper): Jackson2JsonEncoder {
@@ -64,16 +63,6 @@ class WebFluxConfiguration {
         configurer.defaultCodecs().jackson2JsonDecoder(decoder)
       }
     }
-  }
-
-  /**
-   * Register by method
-   * [JacksonAutoConfiguration.Jackson2ObjectMapperBuilderCustomizerConfiguration.StandardJackson2ObjectMapperBuilderCustomizer.configureModules]
-   */
-  @Bean
-  @ConditionalOnClass(name = ["tech.simter.jackson.javatime.JavaTimeModule"])
-  fun simterJavaTimeModule(): Module {
-    return JavaTimeModule()
   }
 
   /**
