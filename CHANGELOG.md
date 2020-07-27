@@ -1,5 +1,10 @@
 # simter-reactive-web changelog
 
+## 2.0.0-M2 - 2020-07-27
+
+- Upgrade to simter-dependencies-2.0.0-M2
+- Move java-time config to module `simter-jackson-javatime`
+
 ## 2.0.0-M1 - 2020-06-02
 
 - Upgrade to simter-dependencies-2.0.0-M1
