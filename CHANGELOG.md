@@ -1,5 +1,9 @@
 # simter-reactive-web changelog
 
+## 2.0.0 - 2020-11-19
+
+- Upgrade to simter-dependencies-2.0.0
+
 ## 2.0.0-M2 - 2020-07-27
 
 - Upgrade to simter-dependencies-2.0.0-M2
