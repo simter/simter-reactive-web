@@ -1,5 +1,14 @@
 # simter-reactive-web changelog
 
+## 3.0.0-M1 - 2021-01-18
+
+- Upgrade to simter-dependencies-3.0.0-M1
+- Upgrade to reactor-netty-http-1.x code
+- Polishing Jackson auto config
+    > Can set 'simter.jackson.disabled=true' to disable it
+- Add kotlinx-serialization auto configuration for spring-webflux
+    > Can set 'simter.kotlinx-serialization.disabled=true' to disable it
+
 ## 2.0.0 - 2020-11-19
 
 - Upgrade to simter-dependencies-2.0.0
