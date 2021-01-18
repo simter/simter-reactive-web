@@ -3,3 +3,12 @@ spring:
     banner-mode: 'off'
   jackson:
     default-property-inclusion: NON_EMPTY # see enum of com.fasterxml.jackson.annotation.JsonInclude.Include
+logging:
+  file.name: target/test.log
+  level: # TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF
+    root: ERROR
+    #tech.simter: INFO
+    #tech.simter.reactive.web: INFO
+    #org.springframework: INFO
+    #org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener: DEBUG
+#simter.jackson.disabled: true
