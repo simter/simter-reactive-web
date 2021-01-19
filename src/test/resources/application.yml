@@ -12,3 +12,4 @@ logging:
     #org.springframework: INFO
     #org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener: DEBUG
 #simter.jackson.disabled: false
+#simter.kotlinx-serialization.disabled: false

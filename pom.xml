@@ -32,12 +32,23 @@
       <artifactId>simter-jwt</artifactId>
     </dependency>
     <dependency>
+      <groupId>tech.simter</groupId>
+      <artifactId>simter-kotlin</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>tech.simter.reactive</groupId>
       <artifactId>simter-reactive-context</artifactId>
     </dependency>
     <dependency>
       <groupId>tech.simter</groupId>
       <artifactId>simter-jackson-javatime</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-serialization-json</artifactId>
+      <type>pom</type>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -125,7 +136,10 @@
         <artifactId>kotlin-maven-plugin</artifactId>
         <configuration>
           <compilerPlugins>
+            <!-- Spring support: https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support -->
             <plugin>spring</plugin>
+            <!-- Kotlin serialization support: https://github.com/Kotlin/kotlinx.serialization -->
+            <plugin>kotlinx-serialization</plugin>
           </compilerPlugins>
         </configuration>
       </plugin>
