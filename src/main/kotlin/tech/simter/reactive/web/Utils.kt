@@ -18,8 +18,7 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
-import reactor.netty.tcp.ProxyProvider
-import reactor.netty.tcp.TcpClient
+import reactor.netty.transport.ProxyProvider
 
 /**
  * @author RJ
@@ -135,8 +134,9 @@ object Utils {
       connectTimeout, socketTimeout, readTimeout, writeTimeout, autoRedirect, proxyHost, proxyPort, secure
     )
 
-    // timeout（WebFlux-v5.1+）
-    var tcpClient: TcpClient = TcpClient.create(ConnectionProvider.create("httpPool")) // fixed max connect pool
+    // timeout
+    var httpClient = HttpClient
+      .create(ConnectionProvider.create("httpPool"))                       // fixed max connect pool
       .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout * 1000) // connect timeout ms
       .option(ChannelOption.SO_TIMEOUT, socketTimeout * 1000)              // socket timeout ms
       .doOnConnected {
@@ -146,7 +146,7 @@ object Utils {
 
     // proxy
     if (proxyPort != null || !proxyHost.isNullOrEmpty()) {
-      tcpClient = tcpClient.proxy {
+      httpClient = httpClient.proxy {
         it.type(ProxyProvider.Proxy.HTTP)
           .host(proxyHost ?: "localhost") // default proxy host localhost
           .port(proxyPort ?: 8888)        // default proxy port 8888
@@ -154,7 +154,7 @@ object Utils {
     }
 
     // ssl
-    if (secure) tcpClient = tcpClient.secure {
+    if (secure) httpClient = httpClient.secure {
       it.sslContext(
         SslContextBuilder
           .forClient()
@@ -164,8 +164,7 @@ object Utils {
     }
 
     return ReactorClientHttpConnector(
-      HttpClient.from(tcpClient)
-        .followRedirect(autoRedirect) // auto redirect
+      httpClient.followRedirect(autoRedirect) // auto redirect
     )
   }
 
