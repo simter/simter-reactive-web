@@ -11,4 +11,4 @@ logging:
     #tech.simter.reactive.web: INFO
     #org.springframework: INFO
     #org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener: DEBUG
-#simter.jackson.disabled: true
+#simter.jackson.disabled: false
