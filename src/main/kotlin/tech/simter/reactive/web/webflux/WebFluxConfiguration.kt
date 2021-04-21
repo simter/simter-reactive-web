@@ -43,29 +43,30 @@ class WebFluxConfiguration {
     @Autowired(required = false) @Qualifier("simterKotlinSerializationJsonDecoder")
     kotlinSerializationJsonDecoder: KotlinSerializationJsonDecoder? = null
   ): WebFluxConfigurer {
+    logger.debug("register a WebFluxConfigurer bean")
     return object : WebFluxConfigurer {
       override fun configureHttpMessageCodecs(configurer: ServerCodecConfigurer) {
         val defaultCodecs = configurer.defaultCodecs()
 
         // jackson
-        jackson2JsonEncoder?.also {
+        if (jackson2JsonEncoder != null) {
           logger.info("Use simterJackson2JsonEncoder")
           defaultCodecs.jackson2JsonEncoder(jackson2JsonEncoder)
-        }
-        jackson2JsonDecoder?.also {
+        } else defaultCodecs.jackson2JsonEncoder(null)
+        if (jackson2JsonDecoder != null) {
           logger.info("Use simterJackson2JsonDecoder")
           defaultCodecs.jackson2JsonDecoder(jackson2JsonDecoder)
-        }
+        } else defaultCodecs.jackson2JsonDecoder(null)
 
         // kotlin-serialization
-        kotlinSerializationJsonEncoder?.also {
+        if (kotlinSerializationJsonEncoder != null) {
           logger.info("Use simterKotlinSerializationJsonEncoder")
           defaultCodecs.kotlinSerializationJsonEncoder(kotlinSerializationJsonEncoder)
-        }
-        kotlinSerializationJsonDecoder?.also {
+        } else defaultCodecs.kotlinSerializationJsonEncoder(null)
+        if (kotlinSerializationJsonDecoder != null) {
           logger.info("Use simterKotlinSerializationJsonDecoder")
           defaultCodecs.kotlinSerializationJsonDecoder(kotlinSerializationJsonDecoder)
-        }
+        } else defaultCodecs.kotlinSerializationJsonDecoder(null)
       }
     }
   }
