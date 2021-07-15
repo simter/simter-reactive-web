@@ -4,7 +4,7 @@
   <parent>
     <groupId>tech.simter</groupId>
     <artifactId>simter-dependencies</artifactId>
-    <version>3.0.0-M2</version>
+    <version>3.0.0-M3</version>
     <relativePath/>
   </parent>
   <groupId>tech.simter.reactive</groupId>
@@ -48,7 +48,6 @@
     <dependency>
       <groupId>org.jetbrains.kotlinx</groupId>
       <artifactId>kotlinx-serialization-json</artifactId>
-      <type>pom</type>
       <optional>true</optional>
     </dependency>
     <dependency>
