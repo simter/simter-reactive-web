@@ -120,7 +120,7 @@ class KotlinxSerializationTest @Autowired constructor(
   @Test
   fun `encode LocalDateTime`() {
     tester = Tester(ldt = LocalDateTime.of(2021, 1, 31, 0, 10, 20))
-    val testerJson = """{"ldt":"2021-01-31 00:10:20"}"""
+    val testerJson = """{"ldt":"2021-01-31T00:10:20"}"""
     testIt(tester, testerJson)
   }
 }
