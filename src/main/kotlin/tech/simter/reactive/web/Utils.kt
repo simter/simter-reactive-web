@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
 import reactor.netty.transport.ProxyProvider
+import java.net.URLEncoder
 
 /**
  * @author RJ
@@ -264,5 +265,18 @@ object Utils {
    */
   fun responseConflictStatus(e: Throwable): Mono<ServerResponse> {
     return responseSpecificStatus(CONFLICT, e)
+  }
+
+  /**
+   * Build a http 'Content-Disposition' header value.
+   *
+   * Return a value with pattern `$type; filename="...ISO_8859_1..." filename*="...UTF-8..."`.
+   */
+  fun buildContentDisposition(type: String, filename: String): String {
+    val filename8859 = String(filename.toByteArray(), Charsets.ISO_8859_1)
+    val filenameUtf8 = URLEncoder.encode(filename, "UTF-8")
+    return type +
+      "; filename=\"$filename8859\"" +
+      "; filename*=\"UTF-8''$filenameUtf8\""
   }
 }
