@@ -1,5 +1,10 @@
 # simter-reactive-web changelog
 
+## 3.0.0-M4 - 2021-08-26
+
+- Upgrade to simter-dependencies-3.0.0-M4
+- Add method `Utils.buildContentDisposition`
+
 ## 3.0.0-M3 - 2021-07-15
 
 - Upgrade to simter-dependencies-3.0.0-M3
