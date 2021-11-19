@@ -19,6 +19,8 @@ import tech.simter.reactive.context.SystemContext
 import tech.simter.reactive.context.SystemContext.SYSTEM_CONTEXT_KEY
 import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8_VALUE
 
+private data class ExcludePath(val path: String, val method: String = "GET")
+
 /**
  * A [WebFilter] for verify a `Authorization` header with jwt.
  *
@@ -29,20 +31,32 @@ import tech.simter.reactive.web.Utils.TEXT_PLAIN_UTF8_VALUE
 class JwtWebFilter @Autowired constructor(
   @Value("\${simter.jwt.secret-key:test}") private val secretKey: String,
   @Value("\${simter.jwt.require-authorized:false}") private val requireAuthorized: Boolean,
-  @Value("\${simter.jwt.exclude-paths:#{null}}") private val excludePaths: List<String>?
+  @Value("\${simter.jwt.exclude-paths:#{null}}") private val excludeStringPaths: List<String>?
 ) : WebFilter {
   private val logger = LoggerFactory.getLogger(JwtWebFilter::class.java)
-  private val hasExcludePaths: Boolean = excludePaths != null && excludePaths.isNotEmpty()
+  private val hasExcludePaths: Boolean = excludeStringPaths != null && excludeStringPaths.isNotEmpty()
+
+  // convert string value to ExcludePath
+  private val excludePaths: List<ExcludePath> = excludeStringPaths?.let { list ->
+    list.map {
+      // such as 'GET:/static' or '/static'
+      val t = it.split(":")
+      if (t.size == 1) ExcludePath(path = t[0].trim())
+      else if (t.size > 1) ExcludePath(path = t[1].trim(), method = t[0].trim().toUpperCase())
+      else throw IllegalArgumentException("'simter.jwt.exclude-paths' config error on item '$it'")
+    }
+  } ?: emptyList()
 
   init {
     logger.warn("Register JwtWebFilter")
     logger.warn("simter.jwt.require-authorized={}", requireAuthorized)
-    logger.warn("simter.jwt.exclude-paths={}", excludePaths?.joinToString(","))
+    logger.warn("simter.jwt.exclude-paths={}", excludeStringPaths?.joinToString(","))
   }
 
   companion object {
     /** The header name to hold JWT token */
     const val JWT_HEADER_NAME = "Authorization"
+
     /** The prefix of the jwt header value */
     const val JWT_VALUE_PREFIX = "Bearer "
   }
@@ -50,7 +64,7 @@ class JwtWebFilter @Autowired constructor(
   override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
     return if (!requireAuthorized
       || exchange.request.method == HttpMethod.OPTIONS
-      || isExcludePath(exchange.request.path.value()))
+      || isExcludePath(exchange.request.path.value(), exchange.request.method!!.name))
       chain.filter(exchange)
     else { // need authorized
       var authorization = exchange.request.headers.getFirst(JWT_HEADER_NAME)
@@ -67,7 +81,7 @@ class JwtWebFilter @Autowired constructor(
           val jwt = JWT.verify(authorization, secretKey)
           logger.debug("jwt verify success")
           chain.filter(exchange)
-            .subscriberContext {
+            .contextWrite {
               // generate extras data
               val extras = mutableMapOf("path" to exchange.request.path.value())
               exchange.request.headers.getFirst(JWT_HEADER_NAME)?.apply { extras[JWT_HEADER_NAME] = this }
@@ -97,8 +111,10 @@ class JwtWebFilter @Autowired constructor(
     }
   }
 
-  private fun isExcludePath(path: String): Boolean {
-    return if (isRootPath(path)) true else hasExcludePaths && excludePaths!!.any { path.startsWith(it) }
+  private fun isExcludePath(path: String, method: String = HttpMethod.GET.name): Boolean {
+    return if (isRootPath(path)) true else hasExcludePaths && excludePaths.any {
+      method == it.method && path.startsWith(it.path)
+    }
   }
 
   private fun isRootPath(path: String) = path == "/" || path == "/index.html" || path == "/index.htm"
