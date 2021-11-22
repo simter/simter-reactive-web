@@ -1,5 +1,11 @@
 # simter-reactive-web changelog
 
+## 3.0.0-M5 - 2021-11-22
+
+- Upgrade to simter-dependencies-3.0.0-M5
+- Enhance jwt exclude paths config
+    > set simter.jwt.exclude-paths to 'GET:/static' or '/static'
+
 ## 3.0.0-M4 - 2021-08-26
 
 - Upgrade to simter-dependencies-3.0.0-M4
