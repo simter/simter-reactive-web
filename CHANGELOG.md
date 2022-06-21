@@ -1,5 +1,9 @@
 # simter-reactive-web changelog
 
+## 3.0.0 - 2022-06-21
+
+- Upgrade to simter-dependencies-3.0.0 (jdk-17)
+
 ## 3.0.0-M5 - 2021-11-22
 
 - Upgrade to simter-dependencies-3.0.0-M5
